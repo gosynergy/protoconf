@@ -1,0 +1,27 @@
+run:
+  go: "1.21"
+  skip-dirs:
+    - bazel-*
+linters:
+  enable-all: true
+  disable:
+    - exhaustruct # Checks if all structure fields are initialized
+    - godox # Tool for detection of FIXME, TODO and other comment keywords
+    - depguard # Checks that only allowed dependencies are used
+    ## Deprecated linters
+    - maligned
+    - nosnakecase
+    - deadcode
+    - varcheck
+    - ifshort
+    - exhaustivestruct
+    - interfacer
+    - golint
+    - structcheck
+    - scopelint
+linters-settings:
+  gci:
+    sections:
+      - standard
+      - default
+      - prefix(github.com/gosynergy/protoconf)
