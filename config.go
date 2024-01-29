@@ -1,6 +1,7 @@
 package protoconf
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -17,7 +18,8 @@ var (
 )
 
 type ConfigLoader struct {
-	opts options
+	opts      options
+	validator *protovalidate.Validator
 }
 
 var _ Loader = (*ConfigLoader)(nil)
@@ -32,25 +34,14 @@ func New(opts ...Option) (*ConfigLoader, error) {
 		opt(&confOpts)
 	}
 
-	if confOpts.validator == nil {
-		validator, err := protovalidate.New()
-		if err != nil {
-			return nil, fmt.Errorf("protovalidate new: %w", err)
-		}
-
-		confOpts.validator = validator
-	}
-
-	if confOpts.protoParser == nil {
-		confOpts.protoParser = &protojson.UnmarshalOptions{DiscardUnknown: true}
-	}
-
-	if confOpts.jsonParser == nil {
-		confOpts.jsonParser = defaultJSONParser{}
+	validator, err := protovalidate.New()
+	if err != nil {
+		return nil, fmt.Errorf("protovalidate new: %w", err)
 	}
 
 	return &ConfigLoader{
-		opts: confOpts,
+		opts:      confOpts,
+		validator: validator,
 	}, nil
 }
 
@@ -65,17 +56,22 @@ func (c *ConfigLoader) Load(v interface{}) error {
 		return fmt.Errorf("parse config: %w", err)
 	}
 
-	data, err := c.opts.jsonParser.Marshal(values)
+	data, err := json.Marshal(values)
 	if err != nil {
 		return fmt.Errorf("json marshal config: %w", err)
 	}
 
-	err = c.opts.protoParser.Unmarshal(data, message)
+	expandedData, err := shell.Expand(string(data), os.Getenv)
+	if err != nil {
+		return fmt.Errorf("shell expand config: %w", err)
+	}
+
+	err = protojson.UnmarshalOptions{DiscardUnknown: true}.Unmarshal([]byte(expandedData), message)
 	if err != nil {
 		return fmt.Errorf("protojson unmarshal config: %w", err)
 	}
 
-	err = c.opts.validator.Validate(message)
+	err = c.validator.Validate(message)
 	if err != nil {
 		return fmt.Errorf("validate: %w", err)
 	}
@@ -102,12 +98,7 @@ func (c *ConfigLoader) parse() (map[string]interface{}, error) {
 		return nil, fmt.Errorf("read config bytes: %w", err)
 	}
 
-	content, err := shell.Expand(string(data), os.Getenv)
-	if err != nil {
-		return nil, fmt.Errorf("shell expand: %w", err)
-	}
-
-	values, err := c.opts.parser.Unmarshal([]byte(content))
+	values, err := c.opts.parser.Unmarshal(data)
 	if err != nil {
 		return nil, fmt.Errorf("parse config: %w", err)
 	}

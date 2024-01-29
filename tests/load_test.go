@@ -1,4 +1,4 @@
-package protoconf_test
+package protoconf
 
 import (
 	"errors"
@@ -12,8 +12,6 @@ import (
 	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/stretchr/testify/assert"
-	"google.golang.org/protobuf/encoding/protojson"
-	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/durationpb"
 
 	"github.com/gosynergy/protoconf"
@@ -211,15 +209,11 @@ func TestLoadNotProtoMessage(t *testing.T) {
 	}
 }
 
-func TestLoadWithCustomOptions(t *testing.T) {
+func TestLoadWithoutProvider(t *testing.T) {
 	unsetEnvs(t)
 
 	loader, err := protoconf.New(
-		protoconf.WithProvider(file.Provider("conf/config.yaml")),
 		protoconf.WithParser(yaml.Parser()),
-		protoconf.WithValidator(customValidator{}),
-		protoconf.WithJSONParser(customJSONParser{}),
-		protoconf.WithProtoParser(&protojson.UnmarshalOptions{DiscardUnknown: true}),
 	)
 	if err != nil {
 		t.Fatal(err)
@@ -227,16 +221,52 @@ func TestLoadWithCustomOptions(t *testing.T) {
 
 	var cfg conf.Config
 	err = loader.Load(&cfg)
+	assert.Error(t, err)
+
+	if !errors.Is(err, protoconf.ErrNoProvider) {
+		t.Fatalf("expected error %v, got %v", protoconf.ErrNoProvider, err)
+	}
+}
+
+func TestLoadWithoutParserCallRead(t *testing.T) {
+	unsetEnvs(t)
+
+	provider := MockProvider{}
+
+	loader, err := protoconf.New(
+		protoconf.WithProvider(&provider),
+	)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	expectedConf := conf.Config{}
+	var cfg conf.Config
+	err = loader.Load(&cfg)
+	assert.Error(t, err)
 
-	confDiff := diff(&expectedConf, &cfg)
-	if confDiff != "" {
-		t.Fatalf("config mismatch (-want +got):\n%s", confDiff)
+	assert.True(t, provider.ReadCalled)
+}
+
+func TestLoadWithParserCallUnmarshal(t *testing.T) {
+	unsetEnvs(t)
+
+	provider := MockProvider{}
+	parser := MockParser{}
+
+	loader, err := protoconf.New(
+		protoconf.WithProvider(&provider),
+		protoconf.WithParser(&parser),
+	)
+	if err != nil {
+		t.Fatal(err)
 	}
+
+	var cfg conf.Config
+	err = loader.Load(&cfg)
+	assert.Error(t, err)
+
+	assert.True(t, provider.ReadBytesCalled)
+	assert.True(t, parser.UnmarshalCalled)
 }
 
 func unsetEnvs(t *testing.T) {
@@ -264,16 +294,4 @@ func diff(want, got interface{}) string {
 			durationpb.Duration{},
 		),
 	)
-}
-
-type customJSONParser struct{}
-
-func (p customJSONParser) Marshal(_ map[string]interface{}) ([]byte, error) {
-	return []byte("{}"), nil
-}
-
-type customValidator struct{}
-
-func (v customValidator) Validate(_ proto.Message) error {
-	return nil
 }
