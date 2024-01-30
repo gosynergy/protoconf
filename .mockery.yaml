@@ -1,0 +1,12 @@
+with-expecter: True
+inpackage: True
+dir: "{{.InterfaceDir}}"
+mockname: "Mock{{.InterfaceName}}"
+outpkg: "{{.PackageName}}"
+filename: "mock_{{.InterfaceName | snakecase}}_test.go"
+packages:
+  github.com/gosynergy/protoconf:
+    interfaces:
+      Provider:
+      Parser:
+      Transformer:

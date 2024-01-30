@@ -1,4 +1,4 @@
-package protoconf_test
+package protoconf
 
 import (
 	"errors"
@@ -8,15 +8,13 @@ import (
 	"github.com/bufbuild/protovalidate-go"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
-	mocks "github.com/gosynergy/protoconf/mocks/github.com/gosynergy/protoconf"
 	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 	"google.golang.org/protobuf/types/known/durationpb"
 
-	"github.com/gosynergy/protoconf"
-	"github.com/gosynergy/protoconf/test/conf"
+	"github.com/gosynergy/protoconf/conf"
 	"github.com/gosynergy/protoconf/transform/expandenv"
 )
 
@@ -33,9 +31,9 @@ func TestConfig(t *testing.T) {
 }
 
 func (s *ConfigTestSuite) TestLoad() {
-	loader, err := protoconf.New(
-		protoconf.WithProvider(file.Provider("conf/config.yaml")),
-		protoconf.WithParser(yaml.Parser()),
+	loader, err := New(
+		WithProvider(file.Provider("conf/config.yaml")),
+		WithParser(yaml.Parser()),
 	)
 	s.Require().NoError(err)
 
@@ -91,10 +89,10 @@ func (s *ConfigTestSuite) TestLoadWithEnvExpand() {
 		grpcAddr = "localhost:9000"
 	)
 
-	loader, err := protoconf.New(
-		protoconf.WithProvider(file.Provider("conf/config-env-expand.yaml")),
-		protoconf.WithParser(yaml.Parser()),
-		protoconf.WithTransformer(
+	loader, err := New(
+		WithProvider(file.Provider("conf/config-env-expand.yaml")),
+		WithParser(yaml.Parser()),
+		WithTransformer(
 			expandenv.New(
 				expandenv.WithGetenv(func(name string) string {
 					switch name {
@@ -157,9 +155,9 @@ func (s *ConfigTestSuite) TestLoadWithEnvExpand() {
 }
 
 func (s *ConfigTestSuite) TestLoadWithValidation() {
-	loader, err := protoconf.New(
-		protoconf.WithProvider(file.Provider("conf/invalid-config.yaml")),
-		protoconf.WithParser(yaml.Parser()),
+	loader, err := New(
+		WithProvider(file.Provider("conf/invalid-config.yaml")),
+		WithParser(yaml.Parser()),
 	)
 	s.Require().NoError(err)
 
@@ -180,9 +178,9 @@ func (s *ConfigTestSuite) TestLoadWithValidation() {
 }
 
 func (s *ConfigTestSuite) TestLoadWithInvalidType() {
-	loader, err := protoconf.New(
-		protoconf.WithProvider(file.Provider("conf/invalid-type-config.yaml")),
-		protoconf.WithParser(yaml.Parser()),
+	loader, err := New(
+		WithProvider(file.Provider("conf/invalid-type-config.yaml")),
+		WithParser(yaml.Parser()),
 	)
 	s.Require().NoError(err)
 
@@ -196,25 +194,25 @@ func (s *ConfigTestSuite) TestLoadWithInvalidType() {
 }
 
 func (s *ConfigTestSuite) TestLoadWithoutProvider() {
-	_, err := protoconf.New(
-		protoconf.WithParser(yaml.Parser()),
+	_, err := New(
+		WithParser(yaml.Parser()),
 	)
 	s.Require().Error(err)
-	s.Require().ErrorIs(err, protoconf.ErrNoProvider)
+	s.Require().ErrorIs(err, ErrNoProvider)
 }
 
 func (s *ConfigTestSuite) TestLoadWithCustomTransformer() {
-	transformer := mocks.NewMockTransformer(s.T())
+	transformer := NewMockTransformer(s.T())
 	transformer.
 		EXPECT().
 		Transform(mock.Anything).
 		Once().
 		Return(map[string]interface{}{}, nil)
 
-	loader, err := protoconf.New(
-		protoconf.WithProvider(file.Provider("conf/config.yaml")),
-		protoconf.WithParser(yaml.Parser()),
-		protoconf.WithTransformer(transformer),
+	loader, err := New(
+		WithProvider(file.Provider("conf/config.yaml")),
+		WithParser(yaml.Parser()),
+		WithTransformer(transformer),
 	)
 	s.Require().NoError(err)
 
@@ -223,13 +221,13 @@ func (s *ConfigTestSuite) TestLoadWithCustomTransformer() {
 }
 
 func (s *ConfigTestSuite) TestLoadWithProviderWithoutParser() {
-	provider := mocks.NewMockProvider(s.T())
+	provider := NewMockProvider(s.T())
 	provider.EXPECT().
 		Read().
 		Return(map[string]interface{}{}, nil)
 
-	loader, err := protoconf.New(
-		protoconf.WithProvider(provider),
+	loader, err := New(
+		WithProvider(provider),
 	)
 	s.Require().NoError(err)
 

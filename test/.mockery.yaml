@@ -1,8 +1,0 @@
-with-expecter: true
-outpkg: mocks
-packages:
-  github.com/gosynergy/protoconf:
-    interfaces:
-      Provider:
-      Parser:
-      Transformer:

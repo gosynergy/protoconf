@@ -8,6 +8,7 @@ linters:
     - exhaustruct # Checks if all structure fields are initialized
     - godox # Tool for detection of FIXME, TODO and other comment keywords
     - depguard # Checks that only allowed dependencies are used
+    - testpackage # Checks that package name matches directory name. Ignores _test.go files
     ## Deprecated linters
     - maligned
     - nosnakecase
