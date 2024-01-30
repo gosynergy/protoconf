@@ -21,9 +21,14 @@ type Parser interface {
 	Unmarshal(data []byte) (map[string]interface{}, error)
 }
 
+type Transformer interface {
+	Transform(values map[string]interface{}) (map[string]interface{}, error)
+}
+
 type options struct {
-	provider Provider
-	parser   Parser
+	provider     Provider
+	parser       Parser
+	transformers []Transformer
 }
 
 func WithProvider(p Provider) Option {
@@ -35,5 +40,11 @@ func WithProvider(p Provider) Option {
 func WithParser(p Parser) Option {
 	return func(o *options) {
 		o.parser = p
+	}
+}
+
+func WithTransformer(t Transformer) Option {
+	return func(o *options) {
+		o.transformers = append(o.transformers, t)
 	}
 }
