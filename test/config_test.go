@@ -20,19 +20,19 @@ import (
 	"github.com/gosynergy/protoconf/transform/expandenv"
 )
 
-type LoadTestSuite struct {
+type ConfigTestSuite struct {
 	suite.Suite
 }
 
-func (s *LoadTestSuite) SetupTest() {}
+func (s *ConfigTestSuite) SetupTest() {}
 
-func TestLoadTestSuite(t *testing.T) {
+func TestConfig(t *testing.T) {
 	t.Parallel()
 
-	suite.Run(t, new(LoadTestSuite))
+	suite.Run(t, new(ConfigTestSuite))
 }
 
-func (s *LoadTestSuite) TestLoad() {
+func (s *ConfigTestSuite) TestLoad() {
 	loader, err := protoconf.New(
 		protoconf.WithProvider(file.Provider("conf/config.yaml")),
 		protoconf.WithParser(yaml.Parser()),
@@ -85,7 +85,7 @@ func (s *LoadTestSuite) TestLoad() {
 }
 
 //nolint:funlen
-func (s *LoadTestSuite) TestLoadWithEnvExpand() {
+func (s *ConfigTestSuite) TestLoadWithEnvExpand() {
 	const (
 		httpAddr = "localhost:8080"
 		grpcAddr = "localhost:9000"
@@ -156,7 +156,7 @@ func (s *LoadTestSuite) TestLoadWithEnvExpand() {
 	}
 }
 
-func (s *LoadTestSuite) TestLoadWithValidation() {
+func (s *ConfigTestSuite) TestLoadWithValidation() {
 	loader, err := protoconf.New(
 		protoconf.WithProvider(file.Provider("conf/invalid-config.yaml")),
 		protoconf.WithParser(yaml.Parser()),
@@ -179,7 +179,7 @@ func (s *LoadTestSuite) TestLoadWithValidation() {
 	s.Equal("value is required", validationErr.Violations[0].GetMessage())
 }
 
-func (s *LoadTestSuite) TestLoadWithInvalidType() {
+func (s *ConfigTestSuite) TestLoadWithInvalidType() {
 	loader, err := protoconf.New(
 		protoconf.WithProvider(file.Provider("conf/invalid-type-config.yaml")),
 		protoconf.WithParser(yaml.Parser()),
@@ -195,7 +195,7 @@ func (s *LoadTestSuite) TestLoadWithInvalidType() {
 	s.True(strings.Contains(err.Error(), "invalid google.protobuf.Duration"))
 }
 
-func (s *LoadTestSuite) TestLoadWithoutProvider() {
+func (s *ConfigTestSuite) TestLoadWithoutProvider() {
 	_, err := protoconf.New(
 		protoconf.WithParser(yaml.Parser()),
 	)
@@ -203,7 +203,7 @@ func (s *LoadTestSuite) TestLoadWithoutProvider() {
 	s.Require().ErrorIs(err, protoconf.ErrNoProvider)
 }
 
-func (s *LoadTestSuite) TestLoadWithCustomTransformer() {
+func (s *ConfigTestSuite) TestLoadWithCustomTransformer() {
 	transformer := mocks.NewMockTransformer(s.T())
 	transformer.
 		EXPECT().
@@ -222,7 +222,7 @@ func (s *LoadTestSuite) TestLoadWithCustomTransformer() {
 	s.Require().NoError(err)
 }
 
-func (s *LoadTestSuite) TestLoadWithProviderWithoutParser() {
+func (s *ConfigTestSuite) TestLoadWithProviderWithoutParser() {
 	provider := mocks.NewMockProvider(s.T())
 	provider.EXPECT().
 		Read().
