@@ -8,6 +8,7 @@ import (
 	"github.com/bufbuild/protovalidate-go"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
+	mocks "github.com/gosynergy/protoconf/mocks/github.com/gosynergy/protoconf"
 	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/stretchr/testify/mock"
@@ -15,7 +16,6 @@ import (
 	"google.golang.org/protobuf/types/known/durationpb"
 
 	"github.com/gosynergy/protoconf"
-	mocks "github.com/gosynergy/protoconf/mocks/github.com/gosynergy/protoconf"
 	"github.com/gosynergy/protoconf/test/conf"
 	"github.com/gosynergy/protoconf/transform/expandenv"
 )
