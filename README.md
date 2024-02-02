@@ -61,6 +61,8 @@ if err != nil {
 
 [//]: @formatter:on
 
+See the [config_test.go](config_test.go) for more examples.
+
 ### Provider
 
 The provider is responsible for reading the configuration data from a source. `protoconf` supports different providers,
