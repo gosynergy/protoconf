@@ -1,20 +1,31 @@
 # protoconf
 
-`protoconf` is a Go-based project that provides an opinionated way to define configuration using Protocol Buffers (protobuf). It leverages the power of protobuf to create structured and strongly-typed configuration files, ensuring type safety and reducing the risk of configuration errors.
+`protoconf` is a Go-based project that provides an opinionated way to define configuration using Protocol Buffers (
+protobuf). It leverages the power of protobuf to create structured and strongly-typed configuration files, ensuring type
+safety and reducing the risk of configuration errors.
 
 ## Features
 
-- **Strongly Typed Configuration**: By using protobuf, `protoconf` ensures that your configuration is strongly typed, reducing the risk of configuration errors.
-- **Flexible Configuration Providers**: `protoconf` supports different configuration providers, allowing you to read configuration from various sources such as files, HTTP, etc.
-- **Customizable Parsers**: You can use different parsers to parse your configuration data, providing flexibility in how you structure your configuration files.
-- **Transformers**: `protoconf` allows you to transform your configuration data as needed, providing an additional layer of flexibility.
-- **Validation**: `protoconf` includes built-in validation using `protovalidate`, ensuring that your configuration adheres to the defined protobuf structure.
+- **Strongly Typed Configuration**: By using protobuf, `protoconf` ensures that your configuration is strongly typed,
+  reducing the risk of configuration errors.
+- **Flexible Configuration Providers**: `protoconf` supports different configuration providers, allowing you to read
+  configuration from various sources such as files, HTTP, etc.
+- **Customizable Parsers**: You can use different parsers to parse your configuration data, providing flexibility in how
+  you structure your configuration files.
+- **Transformers**: `protoconf` allows you to transform your configuration data as needed, providing an additional layer
+  of flexibility.
+- **Validation**: `protoconf` includes built-in validation using `protovalidate`, ensuring that your configuration
+  adheres to the defined protobuf structure.
 
 ## Usage
 
-To use `protoconf`, you need to define your configuration structure using protobuf. Then, you can create a `ConfigLoader` with the desired options, such as the configuration provider and parser. You can also add transformers if needed.
+To use `protoconf`, you need to define your configuration structure using protobuf. Then, you can create
+a `ConfigLoader` with the desired options, such as the configuration provider and parser. You can also add transformers
+if needed.
 
 Here is a basic example:
+
+[//]: @formatter:off
 
 ```go
 import (
@@ -48,12 +59,75 @@ if err != nil {
 }
 ```
 
-In this example, `protoconf` reads the configuration from a YAML file, parses it, and scans it into a `conf.Config` protobuf message.
+[//]: @formatter:on
+
+### Provider
+
+The provider is responsible for reading the configuration data from a source. `protoconf` supports different providers,
+such as file, HTTP, etc. In the example above, `file.Provider` is used to read the configuration from a YAML file.
+
+[//]: @formatter:off
+
+```go
+// Provider represents a configuration provider. Providers can
+// read configuration from a source (file, HTTP etc.)
+type Provider interface {
+	// ReadBytes Read returns the entire configuration as raw []bytes to be parsed.
+	// with a Parser.
+	ReadBytes() ([]byte, error)
+
+	// Read returns the parsed configuration as a nested map[string]interface{}.
+	// It is important to note that the string keys should not be flat delimited
+	// keys like `parent.child.key`, but nested like `{parent: {child: {key: 1}}}`.
+	Read() (map[string]interface{}, error)
+}
+```
+
+[//]: @formatter:on
+
+### Parser
+
+The parser is responsible for parsing the configuration data into a format that can be scanned into a protobuf
+message. `protoconf` supports different parsers, such as JSON, YAML, etc. In the example above, `yaml.Parser` is used to
+parse the configuration data from a YAML file.
+
+In this example, `protoconf` reads the configuration from a YAML file, parses it, and scans it into a `conf.Config`
+protobuf message.
+
+[//]: @formatter:off
+
+```go
+// Parser represents a configuration format parser.
+type Parser interface {
+	Unmarshal(data []byte) (map[string]interface{}, error)
+}
+```
+
+[//]: @formatter:on
+
+### Transformer
+
+Transformers are used to transform the configuration data as needed. `protoconf` supports different transformers, such
+as `expandenv`, `mapkeys`, etc. In the example above, `expandenv.New()` is used to expand environment variables in the
+configuration data.
+
+[//]: @formatter:off
+
+```go
+type Transformer interface {
+	Transform(values map[string]interface{}) (map[string]interface{}, error)
+}
+```
+
+[//]: @formatter:on
+
+Built-in [expandenv](transform/expandenv) is a transformer that expands environment variables in the configuration data.
 
 ## Contributing
 
-Contributions to `protoconf` are welcome! Please submit a pull request or create an issue if you have any improvements or features you'd like to add.
+Contributions to `protoconf` are welcome! Please submit a pull request or create an issue if you have any improvements
+or features you'd like to add.
 
 ## License
 
-`protoconf` is licensed under the MIT License. See the `LICENSE` file for more information.
+`protoconf` is licensed under the Apache 2.0 License. See [LICENSE](LICENSE) for more information.
