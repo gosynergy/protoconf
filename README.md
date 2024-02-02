@@ -40,7 +40,7 @@ loader, err := protoconf.New(
   protoconf.WithProvider(file.Provider("conf/config.yaml")),
   protoconf.WithParser(yaml.Parser()),
   protoconf.WithTransformers(
-    expandenv.New(),
+    expandenv.NewTransformer(),
   ),
 )
 if err != nil {
@@ -110,8 +110,8 @@ type Parser interface {
 ### Transformer
 
 Transformers are used to transform the configuration data as needed. `protoconf` supports different transformers, such
-as `expandenv`, `mapkeys`, etc. In the example above, `expandenv.New()` is used to expand environment variables in the
-configuration data.
+as `expandenv`, `mapkeys`, etc. In the example above, `expandenv.NewTransformer()` is used to expand environment
+variables in the configuration data.
 
 [//]: @formatter:off
 

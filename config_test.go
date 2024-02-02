@@ -92,8 +92,8 @@ func (s *ConfigTestSuite) TestLoadWithEnvExpand() {
 	loader, err := New(
 		WithProvider(file.Provider("conf/config-env-expand.yaml")),
 		WithParser(yaml.Parser()),
-		WithTransformer(
-			expandenv.New(
+		WithTransformers(
+			expandenv.NewTransformer(
 				expandenv.WithGetenv(func(name string) string {
 					switch name {
 					case "HTTP_ADDR":
@@ -212,7 +212,7 @@ func (s *ConfigTestSuite) TestLoadWithCustomTransformer() {
 	loader, err := New(
 		WithProvider(file.Provider("conf/config.yaml")),
 		WithParser(yaml.Parser()),
-		WithTransformer(transformer),
+		WithTransformers(transformer),
 	)
 	s.Require().NoError(err)
 

@@ -16,9 +16,10 @@ import (
 loader, err := protoconf.New(
   ...
   protoconf.WithTransformers(
-    expandenv.New(),
+    expandenv.NewTransformer(),
   ),
 )
+
 ```
 
 [//]: @formatter:on

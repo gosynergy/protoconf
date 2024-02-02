@@ -43,8 +43,8 @@ func WithParser(p Parser) Option {
 	}
 }
 
-func WithTransformer(t Transformer) Option {
+func WithTransformers(t ...Transformer) Option {
 	return func(o *options) {
-		o.transformers = append(o.transformers, t)
+		o.transformers = append(o.transformers, t...)
 	}
 }

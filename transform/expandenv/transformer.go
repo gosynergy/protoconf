@@ -33,7 +33,7 @@ func (t *Transformer) Transform(values map[string]interface{}) (map[string]inter
 	return expanded, nil
 }
 
-func New(opts ...Option) *Transformer {
+func NewTransformer(opts ...Option) *Transformer {
 	confOpts := options{}
 
 	for _, opt := range opts {

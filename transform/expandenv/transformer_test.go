@@ -18,7 +18,7 @@ func TestExpandEnvTransformer_Transform(t *testing.T) {
 			"TEST_ENV_1": "test value 1",
 		}
 
-		transformer := New(WithGetenv(func(s string) string {
+		transformer := NewTransformer(WithGetenv(func(s string) string {
 			return envs[s]
 		}))
 		values := map[string]interface{}{
