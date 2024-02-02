@@ -1,21 +1,22 @@
 syntax = "proto3";
 
+import "buf/validate/validate.proto";
 import "google/protobuf/duration.proto";
 
 option go_package = "conf/conf";
 
-message Config {
+message ConfigWithValidate {
     message Server {
         message Http {
-            string addr = 1;
+            string addr = 1 [(buf.validate.field).required = true];
             google.protobuf.Duration timeout = 3;
         }
         message Grpc {
-            string addr = 1;
+            string addr = 1 [(buf.validate.field).required = true];
             google.protobuf.Duration timeout = 3;
         }
-        Http http = 1;
-        Grpc grpc = 2;
+        Http http = 1 [(buf.validate.field).required = true];
+        Grpc grpc = 2 [(buf.validate.field).required = true];
     }
 
     message Data {
@@ -33,6 +34,6 @@ message Config {
         Redis redis = 2;
     }
 
-    Server server = 1;
-    Data data = 2;
+    Server server = 1 [(buf.validate.field).required = true];
+    Data data = 2 [(buf.validate.field).required = true];
 }

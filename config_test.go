@@ -164,7 +164,7 @@ func (s *ConfigTestSuite) TestLoadWithValidation() {
 	err = loader.Load()
 	s.Require().NoError(err)
 
-	var cfg conf.Config
+	var cfg conf.ConfigWithValidate
 	err = loader.Scan(&cfg)
 	s.Require().Error(err)
 
