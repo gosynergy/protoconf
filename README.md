@@ -1,5 +1,7 @@
 # protoconf
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/gosynergy/protoconf.svg)](https://pkg.go.dev/github.com/gosynergy/protoconf)
+
 `protoconf` is a Go-based project that provides an opinionated way to define configuration using Protocol Buffers. It
 leverages the power of protobuf to create structured and strongly-typed configuration files, ensuring type
 safety and reducing the risk of configuration errors.
