@@ -21,6 +21,7 @@ type Parser interface {
 	Unmarshal(data []byte) (map[string]interface{}, error)
 }
 
+// Transformer transforms the configuration values.
 type Transformer interface {
 	Transform(values map[string]interface{}) (map[string]interface{}, error)
 }
@@ -31,18 +32,21 @@ type options struct {
 	transformers []Transformer
 }
 
+// WithProvider sets the configuration provider.
 func WithProvider(p Provider) Option {
 	return func(o *options) {
 		o.provider = p
 	}
 }
 
+// WithParser sets the configuration parser.
 func WithParser(p Parser) Option {
 	return func(o *options) {
 		o.parser = p
 	}
 }
 
+// WithTransformers sets the configuration transformers.
 func WithTransformers(t ...Transformer) Option {
 	return func(o *options) {
 		o.transformers = append(o.transformers, t...)
