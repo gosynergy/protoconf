@@ -12,6 +12,7 @@ import (
 
 var ErrNoProvider = errors.New("no provider")
 
+// ConfigLoader is a configuration loader.
 type ConfigLoader struct {
 	opts      options
 	validator *protovalidate.Validator
@@ -20,11 +21,13 @@ type ConfigLoader struct {
 
 var _ Loader = (*ConfigLoader)(nil)
 
+// Loader contains the methods to load and scan a configuration.
 type Loader interface {
 	Load() error
 	Scan(message proto.Message) error
 }
 
+// New creates a new ConfigLoader.
 func New(opts ...Option) (*ConfigLoader, error) {
 	confOpts := options{}
 	for _, opt := range opts {
@@ -46,6 +49,7 @@ func New(opts ...Option) (*ConfigLoader, error) {
 	}, nil
 }
 
+// Scan unmarshall the configuration into the provided message and validates it.
 func (c *ConfigLoader) Scan(message proto.Message) error {
 	var err error
 
@@ -62,6 +66,7 @@ func (c *ConfigLoader) Scan(message proto.Message) error {
 	return nil
 }
 
+// Load reads and parses the configuration from the provider and applies the transformers.
 func (c *ConfigLoader) Load() error {
 	var err error
 
