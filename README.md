@@ -87,6 +87,8 @@ type Provider interface {
 
 [//]: @formatter:on
 
+`protoconf` Provider compatible with [koanf](https://github.com/knadh/koanf?tab=readme-ov-file#api) providers.
+
 ### Parser
 
 The parser is responsible for parsing the configuration data into a format that can be scanned into a protobuf
@@ -106,6 +108,8 @@ type Parser interface {
 ```
 
 [//]: @formatter:on
+
+`protoconf` Parser compatible with [koanf](https://github.com/knadh/koanf?tab=readme-ov-file#api) parsers.
 
 ### Transformer
 
