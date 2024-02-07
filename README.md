@@ -2,6 +2,7 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/gosynergy/protoconf.svg)](https://pkg.go.dev/github.com/gosynergy/protoconf)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Test](https://github.com/gosynergy/protoconf/actions/workflows/go.yml/badge.svg)](https://github.com/gosynergy/protoconf/actions/workflows/go.yml/badge.svg)
 [![codecov](https://codecov.io/gh/gosynergy/protoconf/graph/badge.svg?token=D2XW7B9I6J)](https://codecov.io/gh/gosynergy/protoconf)
 
 `protoconf` is a Go-based project that provides an opinionated way to define configuration using Protocol Buffers. It
