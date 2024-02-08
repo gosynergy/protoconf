@@ -14,7 +14,7 @@ import (
 	"github.com/stretchr/testify/suite"
 	"google.golang.org/protobuf/types/known/durationpb"
 
-	"github.com/gosynergy/protoconf/conf"
+	v1 "github.com/gosynergy/protoconf/conf/v1"
 	"github.com/gosynergy/protoconf/transform/expandenv"
 )
 
@@ -40,31 +40,31 @@ func (s *ConfigTestSuite) TestLoad() {
 	err = loader.Load()
 	s.Require().NoError(err)
 
-	var cfg conf.Config
+	var cfg v1.Config
 	err = loader.Scan(&cfg)
 	s.Require().NoError(err)
 
-	expectedConf := conf.Config{
-		Server: &conf.Config_Server{
-			Http: &conf.Config_Server_Http{
+	expectedConf := v1.Config{
+		Server: &v1.Config_Server{
+			Http: &v1.Config_Server_Http{
 				Addr: "127.0.0.1:8080",
 				Timeout: &durationpb.Duration{
 					Seconds: 1,
 				},
 			},
-			Grpc: &conf.Config_Server_Grpc{
+			Grpc: &v1.Config_Server_Grpc{
 				Addr: "0.0.0.0:9000",
 				Timeout: &durationpb.Duration{
 					Seconds: 1,
 				},
 			},
 		},
-		Data: &conf.Config_Data{
-			Database: &conf.Config_Data_Database{
+		Data: &v1.Config_Data{
+			Database: &v1.Config_Data_Database{
 				Driver: "mysql",
 				Source: "root:root@tcp(127.0.0.1:3306)/test",
 			},
-			Redis: &conf.Config_Data_Redis{
+			Redis: &v1.Config_Data_Redis{
 				Addr: "127.0.0.1:6379",
 				ReadTimeout: &durationpb.Duration{
 					Nanos: 200000000,
@@ -112,31 +112,31 @@ func (s *ConfigTestSuite) TestLoadWithEnvExpand() {
 	err = loader.Load()
 	s.Require().NoError(err)
 
-	var cfg conf.Config
+	var cfg v1.Config
 	err = loader.Scan(&cfg)
 	s.Require().NoError(err)
 
-	expectedConf := conf.Config{
-		Server: &conf.Config_Server{
-			Http: &conf.Config_Server_Http{
+	expectedConf := v1.Config{
+		Server: &v1.Config_Server{
+			Http: &v1.Config_Server_Http{
 				Addr: httpAddr,
 				Timeout: &durationpb.Duration{
 					Seconds: 1,
 				},
 			},
-			Grpc: &conf.Config_Server_Grpc{
+			Grpc: &v1.Config_Server_Grpc{
 				Addr: grpcAddr,
 				Timeout: &durationpb.Duration{
 					Seconds: 1,
 				},
 			},
 		},
-		Data: &conf.Config_Data{
-			Database: &conf.Config_Data_Database{
+		Data: &v1.Config_Data{
+			Database: &v1.Config_Data_Database{
 				Driver: "mysql",
 				Source: "root:root@tcp(127.0.0.1:3306)/test",
 			},
-			Redis: &conf.Config_Data_Redis{
+			Redis: &v1.Config_Data_Redis{
 				Addr: "127.0.0.1:6379",
 				ReadTimeout: &durationpb.Duration{
 					Nanos: 200000000,
@@ -164,7 +164,7 @@ func (s *ConfigTestSuite) TestLoadWithValidation() {
 	err = loader.Load()
 	s.Require().NoError(err)
 
-	var cfg conf.ConfigWithValidate
+	var cfg v1.ConfigWithValidate
 	err = loader.Scan(&cfg)
 	s.Require().Error(err)
 
@@ -187,7 +187,7 @@ func (s *ConfigTestSuite) TestLoadWithInvalidType() {
 	err = loader.Load()
 	s.Require().NoError(err)
 
-	var cfg conf.Config
+	var cfg v1.Config
 	err = loader.Scan(&cfg)
 	s.Require().Error(err)
 	s.True(strings.Contains(err.Error(), "invalid google.protobuf.Duration"))
@@ -238,13 +238,13 @@ func (s *ConfigTestSuite) TestLoadWithProviderWithoutParser() {
 func diff(want, got interface{}) string {
 	return cmp.Diff(want, got,
 		cmpopts.IgnoreUnexported(
-			conf.Config{},
-			conf.Config_Server{},
-			conf.Config_Server_Http{},
-			conf.Config_Server_Grpc{},
-			conf.Config_Data{},
-			conf.Config_Data_Database{},
-			conf.Config_Data_Redis{},
+			v1.Config{},
+			v1.Config_Server{},
+			v1.Config_Server_Http{},
+			v1.Config_Server_Grpc{},
+			v1.Config_Data{},
+			v1.Config_Data_Database{},
+			v1.Config_Data_Redis{},
 			durationpb.Duration{},
 		),
 	)

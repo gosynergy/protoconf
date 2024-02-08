@@ -17,9 +17,9 @@
         <option value="protogetter" />
         <option value="gomnd" />
         <option value="misspell" />
+        <option value="spancheck" />
         <option value="nosprintfhostport" />
         <option value="rowserrcheck" />
-        <option value="testpackage" />
         <option value="goerr113" />
         <option value="tagalign" />
         <option value="unconvert" />
