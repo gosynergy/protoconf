@@ -4,6 +4,7 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Test](https://github.com/gosynergy/protoconf/actions/workflows/go.yml/badge.svg)](https://github.com/gosynergy/protoconf/actions/workflows/go.yml/badge.svg)
 [![codecov](https://codecov.io/gh/gosynergy/protoconf/graph/badge.svg?token=D2XW7B9I6J)](https://codecov.io/gh/gosynergy/protoconf)
+[![Maintainability](https://api.codeclimate.com/v1/badges/8b29f40a200ca4f0af04/maintainability)](https://codeclimate.com/github/gosynergy/protoconf/maintainability)
 
 `protoconf` is a Go-based project that provides an opinionated way to define configuration using Protocol Buffers. It
 leverages the power of protobuf to create structured and strongly-typed configuration files, ensuring type
