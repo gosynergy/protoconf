@@ -3,13 +3,13 @@ module github.com/gosynergy/protoconf
 go 1.21.6
 
 require (
-	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.32.0-20231115204500-e097f827e652.1
+	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.33.0-20240221180331-f05a6f4403ce.1
 	github.com/bufbuild/protovalidate-go v0.5.0
 	github.com/google/go-cmp v0.6.0
 	github.com/knadh/koanf/parsers/yaml v0.1.0
 	github.com/knadh/koanf/providers/file v0.1.0
 	github.com/stretchr/testify v1.8.4
-	google.golang.org/protobuf v1.32.0
+	google.golang.org/protobuf v1.33.0
 	mvdan.cc/sh/v3 v3.7.0
 )
 
